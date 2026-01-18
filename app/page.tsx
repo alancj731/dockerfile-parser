@@ -96,12 +96,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-border py-4">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <div className="max-w-7xl mx-auto pr-5 flex flex-col sm:flex-row items-center justify-end gap-2 text-[11px] italic text-muted-foreground">
           <p>
-            Analyze Dockerfiles locally - no data is sent to any server.
-          </p>
-          <p>
-            Built with Next.js and Tailwind CSS
+            Built by <a href="https://www.linkedin.com/in/winnipegdatafan/" className="underline hover:text-foreground">Jian</a>
           </p>
         </div>
       </footer>
