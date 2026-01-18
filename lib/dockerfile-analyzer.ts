@@ -150,7 +150,7 @@ const instructions: Record<string, InstructionInfo> = {
   EXPOSE: {
     category: "expose",
     explain: (args) =>
-      `Documents that the container listens on port ${args}. Note: This doesn't actually publish the port - it's documentation. Use -p flag when running to publish ports.`,
+      `Documents that the container listens on port ${args}. Note: This doesn't actually publish the port, only serves as documentation. Use -p flag when running to publish ports.`,
     tip: () =>
       "EXPOSE is informational - you still need to use -p or -P when running the container to actually publish ports.",
   },

@@ -39,18 +39,18 @@ interface DockerfileExplanationProps {
 }
 
 const categoryColors: Record<LineExplanation["category"], string> = {
-  base: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  workdir: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  copy: "bg-green-500/20 text-green-400 border-green-500/30",
-  run: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  env: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-  expose: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  cmd: "bg-red-500/20 text-red-400 border-red-500/30",
+  base: "bg-muted text-blue-400 border-blue-500/30",
+  workdir: "bg-muted text-yellow-400 border-yellow-500/30",
+  copy: "bg-muted text-green-400 border-green-500/30",
+  run: "bg-muted text-orange-400 border-orange-500/30",
+  env: "bg-muted text-cyan-400 border-cyan-500/30",
+  expose: "bg-muted text-pink-400 border-pink-500/30",
+  cmd: "bg-muted text-sky-400 border-sky-500/30",
   comment: "bg-muted text-muted-foreground border-muted",
-  arg: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-  label: "bg-teal-500/20 text-teal-400 border-teal-500/30",
-  user: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-  healthcheck: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  arg: "bg-muted text-indigo-400 border-indigo-500/30",
+  label: "bg-muted text-teal-400 border-teal-500/30",
+  user: "bg-muted text-amber-400 border-amber-500/30",
+  healthcheck: "bg-muted text-emerald-400 border-emerald-500/30",
   other: "bg-muted text-muted-foreground border-muted",
 };
 
@@ -83,7 +83,7 @@ function ExplanationCard({
     <div
       className={cn(
         "border border-border rounded-lg overflow-hidden transition-all duration-200",
-        isExpanded ? "bg-card" : "bg-card/50 hover:bg-card"
+        isExpanded ? "bg-card" : "bg-card/40 hover:bg-card"
       )}
     >
       <button
@@ -132,9 +132,9 @@ function ExplanationCard({
           </div>
 
           {explanation.tip && (
-            <div className="mt-3 flex items-start gap-2 p-3 rounded-md bg-accent/10 border border-accent/20">
-              <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-accent">{explanation.tip}</p>
+            <div className="mt-3 flex items-start gap-2 p-3 rounded-md bg-green-900/20 border border-green-800/30">
+              <CheckCircle2 className="w-4 h-4 text-green-700 dark:text-green-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-green-700 dark:text-green-600">{explanation.tip}</p>
             </div>
           )}
 

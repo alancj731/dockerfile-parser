@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dockerfile Explainer
+
+A web application that helps you understand Dockerfile instructions line by line. Paste your Dockerfile content and get detailed explanations for each instruction.
+
+## Features
+
+- 🔍 **Line-by-line analysis** - Get detailed explanations for each Dockerfile instruction
+- 🔒 **Privacy-focused** - All analysis happens locally in your browser, no data is sent to any server
+- 🌙 **Dark/Light mode** - Toggle between themes for comfortable viewing
+- 📱 **Responsive design** - Works on desktop and mobile devices
+- ⚡ **Fast and lightweight** - Built with Next.js and Tailwind CSS
+
+## Supported Instructions
+
+The analyzer supports all standard Dockerfile instructions including:
+
+- `FROM` - Base image selection
+- `RUN` - Execute commands
+- `COPY` / `ADD` - File operations
+- `WORKDIR` - Working directory
+- `ENV` / `ARG` - Environment variables
+- `EXPOSE` - Port documentation
+- `CMD` / `ENTRYPOINT` - Container startup
+- `VOLUME` - Data persistence
+- `USER` - Security context
+- `HEALTHCHECK` - Container health monitoring
+- And more...
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/alancj731/dockerfile-parser.git
+cd dockerfile-parser
+
+# Install dependencies
+npm install
+```
+
+### Development
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org) - React framework
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [Lucide React](https://lucide.dev) - Icons
+- [TypeScript](https://www.typescriptlang.org) - Type safety
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
