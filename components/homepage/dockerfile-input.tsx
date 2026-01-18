@@ -72,6 +72,34 @@ export function DockerfileInput({
   const lineNumbersRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
+  // Function to get all lines that are part of a multi-line instruction
+  const getMultilineGroup = (targetLine: number): number[] => {
+    if (!targetLine) return [];
+    
+    const lines = value.split("\n");
+    const group: number[] = [];
+    
+    // Find the start of the multi-line instruction
+    let startLine = targetLine - 1; // Convert to 0-based index
+    while (startLine > 0 && lines[startLine - 1].trim().endsWith("\\")) {
+      startLine--;
+    }
+    
+    // Add all lines from start until no more backslashes
+    let currentLine = startLine;
+    while (currentLine < lines.length) {
+      group.push(currentLine + 1); // Convert back to 1-based
+      if (!lines[currentLine].trim().endsWith("\\")) {
+        break;
+      }
+      currentLine++;
+    }
+    
+    return group;
+  };
+
+  const highlightedLines = getMultilineGroup(highlightedLine || 0);
+
   // Sync scroll between textarea, line numbers, and highlight overlay
   const handleScroll = () => {
     if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
@@ -181,7 +209,7 @@ export function DockerfileInput({
               {lines.map((_, idx) => (
                 <div 
                   key={idx} 
-                  className={highlightedLine === idx + 1 ? "text-blue-600 font-bold bg-blue-200 -mx-3 px-3" : "text-gray-400"}
+                  className={highlightedLines.includes(idx + 1) ? "text-blue-600 font-bold bg-blue-200 -mx-3 px-3" : "text-gray-400"}
                 >
                   {idx + 1}
                 </div>
@@ -200,7 +228,7 @@ export function DockerfileInput({
               {lines.map((line, idx) => (
                 <div
                   key={idx}
-                  className={highlightedLine === idx + 1 ? "bg-blue-200" : ""}
+                  className={highlightedLines.includes(idx + 1) ? "bg-blue-200" : ""}
                   style={{ minHeight: '24px' }}
                 >
                   <span className="invisible whitespace-pre">{line || " "}</span>
@@ -214,8 +242,9 @@ export function DockerfileInput({
               onChange={(e) => onChange(e.target.value)}
               onScroll={handleScroll}
               placeholder="Paste your Dockerfile content here..."
-              className="w-full h-full p-3 bg-transparent font-mono text-sm leading-6 text-black resize-none focus:outline-none placeholder:text-gray-400 relative z-10"
+              className="w-full h-full p-3 bg-transparent font-mono text-sm leading-6 text-black resize-none focus:outline-none placeholder:text-gray-400 relative z-10 whitespace-nowrap overflow-x-auto"
               spellCheck={false}
+              style={{ whiteSpace: 'nowrap' }}
             />
           </div>
         </div>

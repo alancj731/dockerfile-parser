@@ -253,6 +253,34 @@ export function analyzeDockerfile(content: string): LineExplanation[] {
       continue;
     }
 
+    // Check if this line is a continuation of a previous instruction
+    // (doesn't start with a Dockerfile keyword and has content)
+    const dockerfileKeywords = [
+      'FROM', 'RUN', 'CMD', 'LABEL', 'EXPOSE', 'ENV', 'ADD', 'COPY',
+      'ENTRYPOINT', 'VOLUME', 'USER', 'WORKDIR', 'ARG', 'ONBUILD',
+      'STOPSIGNAL', 'HEALTHCHECK', 'SHELL'
+    ];
+    
+    const startsWithKeyword = dockerfileKeywords.some(keyword => 
+      trimmedLine.toUpperCase().startsWith(keyword + ' ') || 
+      trimmedLine.toUpperCase() === keyword
+    );
+
+    // If this line doesn't start with a keyword and we're not building a multi-line,
+    // it might be a continuation of the previous line (common in shell redirects)
+    if (!startsWithKeyword && !multilineBuffer && explanations.length > 0 && !trimmedLine.startsWith("#")) {
+      // Check if previous explanation exists and this looks like a continuation
+      const prevExplanation = explanations[explanations.length - 1];
+      if (prevExplanation && prevExplanation.category === 'run') {
+        // Merge with previous RUN instruction
+        prevExplanation.content += " " + trimmedLine;
+        if (prevExplanation.content.length > 80) {
+          prevExplanation.content = prevExplanation.content.substring(0, 77) + "...";
+        }
+        continue;
+      }
+    }
+
     // Complete multi-line or process single line
     const fullLine = multilineBuffer ? multilineBuffer + trimmedLine : trimmedLine;
     const currentLineNumber = multilineBuffer ? multilineStartLine : lineNumber;
