@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react"
+import React, { useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button";
 import { FileCode, Upload, Trash2 } from "lucide-react";
-import { useRef } from "react";
 
 interface DockerfileInputProps {
   value: string;
   onChange: (value: string) => void;
   onAnalyze: () => void;
   isAnalyzing: boolean;
+  highlightedLine?: number | null;
 }
 
 const sampleDockerfile = `# Use official Node.js LTS image as base
@@ -65,8 +65,37 @@ export function DockerfileInput({
   onChange,
   onAnalyze,
   isAnalyzing,
+  highlightedLine,
 }: DockerfileInputProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
+
+  // Sync scroll between textarea, line numbers, and highlight overlay
+  const handleScroll = () => {
+    if (textareaRef.current && lineNumbersRef.current && highlightRef.current) {
+      const scrollTop = textareaRef.current.scrollTop;
+      lineNumbersRef.current.scrollTop = scrollTop;
+      highlightRef.current.scrollTop = scrollTop;
+    }
+  };
+
+  // Scroll to highlighted line when it changes
+  useEffect(() => {
+    if (highlightedLine && textareaRef.current) {
+      const lineHeight = 24; // leading-6 = 1.5rem = 24px
+      const targetScroll = (highlightedLine - 1) * lineHeight;
+      const containerHeight = textareaRef.current.clientHeight;
+      
+      // Only scroll if the line is not visible
+      if (targetScroll < textareaRef.current.scrollTop || 
+          targetScroll > textareaRef.current.scrollTop + containerHeight - lineHeight) {
+        textareaRef.current.scrollTop = Math.max(0, targetScroll - containerHeight / 2);
+        handleScroll();
+      }
+    }
+  }, [highlightedLine]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,21 +173,48 @@ export function DockerfileInput({
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex">
           {/* Line numbers */}
-          <div className="flex-shrink-0 bg-blue-100/30 border-r border-blue-200 select-none overflow-y-auto rounded-bl-xl">
-            <div className="px-3 py-3 font-mono text-xs leading-6 text-gray-400 text-right">
+          <div 
+            ref={lineNumbersRef}
+            className="flex-shrink-0 bg-blue-100/30 border-r border-blue-200 select-none overflow-hidden"
+          >
+            <div className="px-3 py-3 font-mono text-xs leading-6 text-right">
               {lines.map((_, idx) => (
-                <div key={idx}>{idx + 1}</div>
+                <div 
+                  key={idx} 
+                  className={highlightedLine === idx + 1 ? "text-blue-600 font-bold bg-blue-200 -mx-3 px-3" : "text-gray-400"}
+                >
+                  {idx + 1}
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Code editor */}
-          <div className="flex-1 overflow-auto">
+          {/* Code editor with highlight overlay */}
+          <div className="flex-1 relative min-w-0">
+            {/* Highlight overlay */}
+            <div 
+              ref={highlightRef}
+              className="absolute inset-0 p-3 font-mono text-sm leading-6 pointer-events-none overflow-hidden" 
+              aria-hidden="true"
+            >
+              {lines.map((line, idx) => (
+                <div
+                  key={idx}
+                  className={highlightedLine === idx + 1 ? "bg-blue-200" : ""}
+                  style={{ minHeight: '24px' }}
+                >
+                  <span className="invisible whitespace-pre">{line || " "}</span>
+                </div>
+              ))}
+            </div>
+            {/* Actual textarea */}
             <textarea
+              ref={textareaRef}
               value={value}
               onChange={(e) => onChange(e.target.value)}
+              onScroll={handleScroll}
               placeholder="Paste your Dockerfile content here..."
-              className="w-full h-full p-3 bg-transparent font-mono text-sm leading-6 text-black resize-none focus:outline-none placeholder:text-gray-400"
+              className="w-full h-full p-3 bg-transparent font-mono text-sm leading-6 text-black resize-none focus:outline-none placeholder:text-gray-400 relative z-10"
               spellCheck={false}
             />
           </div>

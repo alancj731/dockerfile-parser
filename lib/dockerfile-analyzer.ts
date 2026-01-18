@@ -244,6 +244,19 @@ export function analyzeDockerfile(content: string): LineExplanation[] {
       continue;
     }
 
+    // Handle comments - check before multi-line handling
+    if (trimmedLine.startsWith("#") && !multilineBuffer) {
+      explanations.push({
+        lineNumber: lineNumber,
+        instruction: "",
+        content: trimmedLine,
+        explanation:
+          "A comment providing documentation or context. Comments are ignored during the build but help others understand the Dockerfile.",
+        category: "comment",
+      });
+      continue;
+    }
+
     // Handle multi-line instructions (ending with \)
     if (trimmedLine.endsWith("\\")) {
       if (!multilineBuffer) {
@@ -257,19 +270,6 @@ export function analyzeDockerfile(content: string): LineExplanation[] {
     const fullLine = multilineBuffer ? multilineBuffer + trimmedLine : trimmedLine;
     const currentLineNumber = multilineBuffer ? multilineStartLine : lineNumber;
     multilineBuffer = "";
-
-    // Handle comments
-    if (fullLine.startsWith("#")) {
-      explanations.push({
-        lineNumber: currentLineNumber,
-        instruction: "",
-        content: fullLine,
-        explanation:
-          "A comment providing documentation or context. Comments are ignored during the build but help others understand the Dockerfile.",
-        category: "comment",
-      });
-      continue;
-    }
 
     // Parse instruction
     const match = fullLine.match(/^(\S+)\s*(.*)/);

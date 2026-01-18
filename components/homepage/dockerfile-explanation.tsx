@@ -36,6 +36,7 @@ export interface LineExplanation {
 interface DockerfileExplanationProps {
   explanations: LineExplanation[];
   isLoading: boolean;
+  onLineClick?: (lineNumber: number) => void;
 }
 
 const categoryColors: Record<LineExplanation["category"], string> = {
@@ -74,10 +75,12 @@ function ExplanationCard({
   explanation,
   isExpanded,
   onToggle,
+  onLineClick,
 }: {
   explanation: LineExplanation;
   isExpanded: boolean;
   onToggle: () => void;
+  onLineClick?: (lineNumber: number) => void;
 }) {
   return (
     <div
@@ -87,7 +90,10 @@ function ExplanationCard({
       )}
     >
       <button
-        onClick={onToggle}
+        onClick={() => {
+          onToggle();
+          onLineClick?.(explanation.lineNumber);
+        }}
         className="w-full flex items-start gap-3 p-4 text-left"
       >
         <div className="flex-shrink-0 mt-0.5">
@@ -153,6 +159,7 @@ function ExplanationCard({
 export function DockerfileExplanation({
   explanations,
   isLoading,
+  onLineClick,
 }: DockerfileExplanationProps) {
   const [expandedLines, setExpandedLines] = useState<Set<number>>(new Set());
 
@@ -235,6 +242,7 @@ export function DockerfileExplanation({
                 explanation={explanation}
                 isExpanded={expandedLines.has(explanation.lineNumber)}
                 onToggle={() => toggleLine(explanation.lineNumber)}
+                onLineClick={onLineClick}
               />
             </div>
           ))}

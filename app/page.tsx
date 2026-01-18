@@ -14,6 +14,7 @@ export default function Home() {
   const [dockerfileContent, setDockerfileContent] = useState("");
   const [explanations, setExplanations] = useState<LineExplanation[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [highlightedLine, setHighlightedLine] = useState<number | null>(null);
 
   const handleAnalyze = useCallback(() => {
     setIsAnalyzing(true);
@@ -78,6 +79,7 @@ export default function Home() {
               onChange={setDockerfileContent}
               onAnalyze={handleAnalyze}
               isAnalyzing={isAnalyzing}
+              highlightedLine={highlightedLine}
             />
           </div>
 
@@ -86,6 +88,7 @@ export default function Home() {
             <DockerfileExplanation
               explanations={explanations}
               isLoading={isAnalyzing}
+              onLineClick={setHighlightedLine}
             />
           </div>
         </div>
