@@ -84,13 +84,15 @@ function ExplanationCard({
 }) {
   return (
     <div
+      onClick={() => onLineClick?.(explanation.lineNumber)}
       className={cn(
-        "border border-border rounded-lg overflow-hidden transition-all duration-200",
+        "border border-border rounded-lg overflow-hidden transition-all duration-200 cursor-pointer",
         isExpanded ? "bg-card" : "bg-card/40 hover:bg-card"
       )}
     >
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           onToggle();
           onLineClick?.(explanation.lineNumber);
         }}
